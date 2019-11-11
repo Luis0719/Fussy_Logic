@@ -61,7 +61,7 @@ class GaussyModel():
         result = [0] * 500
         for i in range(0, 500):
             x = i*self.x_step
-            value = variableModel.evaluate_x(x, median, desv_std)
+            value = GaussyModel.evaluate_x(x, median, desv_std)
 
             result[i] = value
 

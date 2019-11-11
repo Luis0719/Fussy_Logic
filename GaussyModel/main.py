@@ -25,7 +25,7 @@ def main():
         }
     ]
     tmpModel = GaussyModel(
-                    temperatures=temperatures, 
+                    variables=temperatures, 
                     x_step=0.1)
     tmpModel.fit()
 
