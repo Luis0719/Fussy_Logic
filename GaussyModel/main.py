@@ -3,25 +3,22 @@ from GaussyModel import GaussyModel
 def main():
     temperatures = [
         {
-            'bottom': -24,
-            'top': 24,
-            'desv_std': 9,
-            'p': 1,
-            'q': 1
+            'median': 0,
+            'desv_std': 6,
+            'p': 0.04,
+            'q': 0
         },
         {
-            'bottom': 19,
-            'top': 36,
-            'desv_std': 3,
-            'p': 1,
-            'q': 1
+            'median': 18,
+            'desv_std': 6,
+            'p': 0.05,
+            'q': 0
         },
         {
-            'bottom': 30,
-            'top': 50,
-            'desv_std': 4,
-            'p': 1,
-            'q': 1
+            'median': 30,
+            'desv_std': 6,
+            'p': 0.08,
+            'q': 0
         }
     ]
     tmpModel = GaussyModel(

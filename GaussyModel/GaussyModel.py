@@ -18,14 +18,16 @@ except:
 logger = open('logs.log', 'w')
 
 class GaussyModel():
-    def __init__(self, variables, x_step):
+    def __init__(self, variables, x_step, bottom_limit=-200, top_limit=500):
         self.variables = variables
         self.x_step = x_step
+        self.bottom_limit = bottom_limit
+        self.top_limit = top_limit
 
 
     @staticmethod
     def evaluate_x(x, median, desv_std):
-        return math.e ** ((-1/2) * (((x-median) / desv_std) ** 2))
+        return math.e ** ((-0.5) * (((x-median) / desv_std) ** 2))
 
     def log(self, text, debuglevel=0, logtype="INFO"):
         if self.debuglevel <= debuglevel:
@@ -34,45 +36,77 @@ class GaussyModel():
             logger.write(msg + '\n')
 
 
-    def plot_ranges(self, variables):
-        plt.rcParams.update({'font.size': 10})
-        
-        for temp in variables:
+    def plot_ranges(self, plt):        
+        for temp in self.variables:
             values = self.get_function_values(temp)
 
             if not plt_found:
                 print("Matplotlib libary not found. Install it to see the graph. Install: 'pip install matplotlib'")
                 return
 
-            plt.plot([i*self.x_step for i in range(0, 500)], values)
+            plt.plot([i*self.x_step for i in range(self.bottom_limit, self.top_limit)], values)
+
         
-        plt.show()
+        plt.set_xlabel('Temperature')
+        plt.set_ylabel('Membership Grade')
+        plt.grid(True)
 
 
     def get_function_values(self, variable):
-        bottom = variable['bottom']
-        top = variable['top']
         desv_std = variable['desv_std']
-        median = bottom + ((top - bottom)/2)
+        median = variable['median']
 
-        print(f"Bottom: {bottom} top: {top} median: {median} dsv_std: {desv_std}")
-        top = int(top / self.x_step)
-
-        result = [0] * 500
-        for i in range(0, 500):
+        result = [0] * (self.top_limit - self.bottom_limit)
+        for i in range(self.bottom_limit, self.top_limit):
             x = i*self.x_step
             value = GaussyModel.evaluate_x(x, median, desv_std)
 
-            result[i] = value
+            result[i-self.bottom_limit] = value
 
-        # print(result)
         return result
 
+
+    def get_fussy_values(self):
+        result = [0] * (self.top_limit - self.bottom_limit)
+        function_values = [0] * len(self.variables) 
+        processed_values = [0] * len(self.variables)
+
+        print(self.variables)
+
+        for i in range(self.bottom_limit, self.top_limit):
+            x = i*self.x_step
+            for j in range(len(self.variables)):
+                median = self.variables[j]['median']
+                desv_std = self.variables[j]['desv_std']
+                function_values[j] = GaussyModel.evaluate_x(x, median, desv_std)
+
+            for j in range(len(self.variables)):
+                p = self.variables[j]['p']
+                q = self.variables[j]['q']
+                processed_values[j] = p*function_values[j] + q
+
+            result[i-self.bottom_limit] = sum(processed_values) / sum(function_values)
+            
+        return result
     
-    def plot_fussy_inference_network():
-        pass
+
+    def plot_fussy_inference_network(self, plt):
+        values = self.get_fussy_values()
+        plt.plot([i*self.x_step for i in range(self.bottom_limit, self.top_limit)], values)
+        plt.set_xlabel('Temperature')
+        plt.set_ylabel('')
+        plt.grid(True)
+
+    def plot(self):
+        fig, axs = plt.subplots(1, 2)
+        fig.figsize = (100,100)
+        # axs[0].title.set_text(f"Generation {generation}")
+        self.plot_fussy_inference_network(axs[0])
+        self.plot_ranges(axs[1])
+
+        plt.show()
 
     def fit(self):
-        self.plot_ranges(self.variables)
+        self.plot()
 
 
