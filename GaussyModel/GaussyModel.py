@@ -29,12 +29,6 @@ class GaussyModel():
             element['gaussy_values'] = [0] * self.range
 
 
-    def log(self, text, debuglevel=0, logtype="INFO"):
-        if self.debuglevel <= debuglevel:
-            msg = "{} - {}".format(logtype, text)
-            print(msg)
-            logger.write(msg + '\n')
-
     @staticmethod
     def evaluate_x(x, median, desv_std):
         return math.e ** ((-0.5) * (((x-median) / desv_std) ** 2))
@@ -43,6 +37,13 @@ class GaussyModel():
     @staticmethod
     def evaluate_fussy(x, p, q, gaussy_value):
         return gaussy_value * ((p * x) + q)
+
+
+    def log(self, text, debuglevel=0, logtype="INFO"):
+        if self.debuglevel <= debuglevel:
+            msg = "{} - {}".format(logtype, text)
+            print(msg)
+            logger.write(msg + '\n')
 
 
     def config_plots(self):
@@ -59,11 +60,12 @@ class GaussyModel():
 
         return fig, axs
 
+
     def plot_ranges(self, plt, values):        
         plt.plot([i*self.x_step for i in range(self.bottom_limit, self.top_limit)], values)
+        
 
-
-    def plot(self):
+    def fit(self):
         fig, axs = self.config_plots()
 
         fussy_network_values = [0] * self.range
@@ -92,9 +94,5 @@ class GaussyModel():
         self.plot_ranges(axs[0], fussy_network_values)
 
         plt.show()
-        
-
-    def fit(self):
-        self.plot()
 
 

@@ -5,14 +5,14 @@ def main():
         {
             'median': 0,
             'desv_std': 6,
-            'p': 0.04,
-            'q': 1,
+            'p': -0.1,
+            'q': 3,
             'gaussy_values': None
         },
         {
-            'median': 18,
-            'desv_std': 6,
-            'p': 0.05,
+            'median': 15,
+            'desv_std': 7,
+            'p': 0.001,
             'q': 1,
             'gaussy_values': None
         },
@@ -27,7 +27,7 @@ def main():
     tmpModel = GaussyModel(
                     variables=temperatures, 
                     x_step=0.1,
-                    bottom_limit=-200,
+                    bottom_limit=0,
                     top_limit=500)
     tmpModel.fit()
 
