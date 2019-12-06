@@ -19,6 +19,15 @@ except:
 
 
 logger = open('logs.log', 'w')
+MEDIAN = 0
+DESV_STD = 1
+GAUSSY_VALUES = 2
+
+PARAM_P = 0
+PARAM_Q = 1
+PARAM_R = 2
+PARAM_X = 3
+PARAM_Y = 4
 
 class GaussyModel():
     def __init__(self, x_elements, y_elements, rules, step, step_range, debuglevel=0):
@@ -31,8 +40,8 @@ class GaussyModel():
         self.debuglevel = debuglevel
 
         for i in range(len(x_elements)):
-            x_elements[i]['gaussy_values'] = [0] * self.total_Steps
-            y_elements[i]['gaussy_values'] = [0] * self.total_Steps
+            x_elements[i][GAUSSY_VALUES] = [0] * self.total_Steps
+            y_elements[i][GAUSSY_VALUES] = [0] * self.total_Steps
 
 
     def log(self, text, debuglevel=0, logtype="INFO"):
@@ -102,45 +111,42 @@ class GaussyModel():
 
                 self.log(f"X={x} Y={y}")
                 for element in self.rules:
-                    x_gaussy_value = GaussyModel.evaluate_gaussy(x, element['x']['median'], element['x']['desv_std'])
-                    y_gaussy_value = GaussyModel.evaluate_gaussy(y, element['y']['median'], element['y']['desv_std'])
+                    x_gaussy_value = GaussyModel.evaluate_gaussy(x, element[PARAM_X][MEDIAN], element[PARAM_X][DESV_STD])
+                    y_gaussy_value = GaussyModel.evaluate_gaussy(y, element[PARAM_Y][MEDIAN], element[PARAM_Y][DESV_STD])
                     
-                    element['x']['gaussy_values'][i-self.step_range[0]] = x_gaussy_value
-                    element['y']['gaussy_values'][j-self.step_range[0]] = y_gaussy_value
+                    element[PARAM_X][GAUSSY_VALUES][i-self.step_range[0]] = x_gaussy_value
+                    element[PARAM_Y][GAUSSY_VALUES][j-self.step_range[0]] = y_gaussy_value
                     xy_gaussy_product = x_gaussy_value * y_gaussy_value
                     self.log(f"{x_gaussy_value} * {y_gaussy_value} = {xy_gaussy_product}")
 
                     gaussy_subtotal += xy_gaussy_product
 
-                    fussy_value = GaussyModel.evaluate_fussy(x, y, element['p'], element['q'], element['r'], xy_gaussy_product)
-                    self.log(f"P={element['p']} Q={element['q']} R={element['r']} Result={fussy_value}")
+                    fussy_value = GaussyModel.evaluate_fussy(x, y, element[PARAM_P], element[PARAM_Q], element[PARAM_R], xy_gaussy_product)
+                    self.log(f"P={element[PARAM_P]} Q={element[PARAM_Q]} R={element[PARAM_R]} XY={xy_gaussy_product} Result={fussy_value}")
                     fussy_subtotal += fussy_value
 
                 self.log(f"{fussy_subtotal} / {gaussy_subtotal} network[{j-self.step_range[0]}][{i-self.step_range[0]}]={fussy_subtotal / gaussy_subtotal}")
                 fussy_network_values[j-self.step_range[0]][i-self.step_range[0]] = fussy_subtotal / gaussy_subtotal
-                self.log("****************")
-
-        self.log(fussy_network_values)    
-        return fussy_network_values
+                self.log("****************")  
 
         # Plot temperature graph
         for i in range(len(self.x_elements)):
-            self.plot_ranges(ranges_axs, self.x_elements[i]['gaussy_values'])
-            self.plot_ranges(ranges_axs, self.y_elements[i]['gaussy_values'])
+            self.plot_ranges(ranges_axs, self.x_elements[i][GAUSSY_VALUES])
+            self.plot_ranges(ranges_axs, self.y_elements[i][GAUSSY_VALUES])
             
 
-        # print("--------------------------X1---------------------------")
-        # print(self.x_elements[0]['gaussy_values'])
-        # print("--------------------------X2---------------------------")
-        # print(self.x_elements[1]['gaussy_values'])
-        # print("--------------------------X3---------------------------")
-        # print(self.x_elements[2]['gaussy_values'])
-        # print("--------------------------Y1---------------------------")
-        # print(self.y_elements[0]['gaussy_values'])
-        # print("--------------------------Y2---------------------------")
-        # print(self.y_elements[1]['gaussy_values'])
-        # print("--------------------------Y3---------------------------")
-        # print(self.y_elements[2]['gaussy_values'])
+        self.log("--------------------------X1---------------------------")
+        self.log(self.x_elements[0][GAUSSY_VALUES])
+        self.log("--------------------------X2---------------------------")
+        self.log(self.x_elements[1][GAUSSY_VALUES])
+        self.log("--------------------------X3---------------------------")
+        self.log(self.x_elements[2][GAUSSY_VALUES])
+        self.log("--------------------------Y1---------------------------")
+        self.log(self.y_elements[0][GAUSSY_VALUES])
+        self.log("--------------------------Y2---------------------------")
+        self.log(self.y_elements[1][GAUSSY_VALUES])
+        self.log("--------------------------Y3---------------------------")
+        self.log(self.y_elements[2][GAUSSY_VALUES])
 
         # Plot fussy inference network
         # self.plot_fussy_network(axs[0], fussy_network_values)
@@ -148,5 +154,7 @@ class GaussyModel():
 
         if self.debuglevel <= 4:
             plt.show()
+
+        return fussy_network_values
 
 

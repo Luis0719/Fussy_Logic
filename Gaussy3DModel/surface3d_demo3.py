@@ -39,34 +39,28 @@ import numpy as np
 def f(t):
     return np.cos(2*np.pi*t) * np.exp(-t)
 
+X = np.arange(-5, 5, 1)
+Y = np.arange(-5, 5, 1)
+X, Y = np.meshgrid(X, Y)
 
 # Set up a figure twice as tall as it is wide
-fig = plt.figure(figsize=plt.figaspect(.4))
+fig = plt.figure(figsize=plt.figaspect(0.3))
 fig.suptitle('A tale of 2 subplots')
 
-# First subplot
-ax = fig.add_subplot(1, 2, 1)
-
-t1 = np.arange(0.0, 5.0, 0.1)
-t2 = np.arange(0.0, 5.0, 0.02)
-t3 = np.arange(0.0, 2.0, 0.01)
-
-ax.plot(t1, f(t1), 'bo',
-        t2, f(t2), 'k--', markerfacecolor='green')
-ax.grid(True)
-ax.set_ylabel('Damped oscillation')
-
 # Second subplot
-ax = fig.add_subplot(1, 2, 2, projection='3d')
-
-X = np.arange(-5, 5, 0.25)
-Y = np.arange(-5, 5, 0.25)
-X, Y = np.meshgrid(X, Y)
-R = np.sqrt(X**2 + Y**2)
-Z = np.sin(R)
-
+ax = fig.add_subplot(1, 3, 1, projection='3d')
+Z = np.sin(X + Y)
 surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1,
                        linewidth=0, antialiased=False)
-ax.set_zlim(-1, 1)
+
+ax = fig.add_subplot(1, 3, 2, projection='3d')
+Z = np.sqrt(X + Y)
+surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1,
+                       linewidth=0, antialiased=False)
+
+ax = fig.add_subplot(1, 3, 3, projection='3d')
+Z = np.power(X + Y, 2)
+surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1,
+                       linewidth=0, antialiased=False)
 
 plt.show()
