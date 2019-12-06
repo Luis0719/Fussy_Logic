@@ -1,124 +1,30 @@
-from GaussyModel import GaussyModel
-
+from GeneticAlgorith import PSmodel
 
 def main():
-    '''
-        Programa Que recibe X=Tengo tiempo y Y=Tengo dinero => Z=Voy al cine
-    '''
-
-    X = [
-        {
-            'median': 1,
-            'desv_std': 6,
-            'gaussy_values': None
-        },
-        {
-            'median': 14,
-            'desv_std': 7,
-            'gaussy_values': None
-        },
-        {
-            'median': 29,
-            'desv_std': 6,
-            'gaussy_values': None
-        }
+    target = [
+        [1,1,1,1,1],
+        [1,2,2,2,2],
+        [1,2,3,3,3],
+        [1,2,2,2,2],
+        [1,1,1,1,1],
     ]
+    resolutions=[51, 51, 1000, 1000, 51]
 
-    Y = [
-        {
-            'median': 0,
-            'desv_std': 6,
-            'gaussy_values': None
-        },
-        {
-            'median': 15,
-            'desv_std': 7,
-            'gaussy_values': None
-        },
-        {
-            'median': 30,
-            'desv_std': 6,
-            'gaussy_values': None
-        }
-    ]
-
-
-    fussy_rules = [
-        {
-            'p': -0.1,
-            'q': 3,
-            'r': 0,
-            'x': X[0],
-            'y': Y[0]
-        },
-        {
-            'p': 0.001,
-            'q': 1,
-            'r': 0,
-            'x': X[0],
-            'y': Y[1]
-        },
-        {
-            'p': 0.08,
-            'q': 1,
-            'r': 0,
-            'x': X[0],
-            'y': Y[2]
-        },
-        {
-            'p': -0.2,
-            'q': 3,
-            'r': 0,
-            'x': X[1],
-            'y': Y[0]
-        },
-        {
-            'p': 0.002,
-            'q': 1,
-            'r': 0,
-            'x': X[1],
-            'y': Y[1]
-        },
-        {
-            'p': 0.07,
-            'q': 1,
-            'r': 0,
-            'x': X[1],
-            'y': Y[2]
-        },
-        {
-            'p': -0.3,
-            'q': 3,
-            'r': 0,
-            'x': X[2],
-            'y': Y[0]
-        },
-        {
-            'p': 0.003,
-            'q': 1,
-            'r': 0,
-            'x': X[2],
-            'y': Y[1]
-        },
-        {
-            'p': 0.06,
-            'q': 1,
-            'r': 0,
-            'x': X[2],
-            'y': Y[2]
-        }
-    ]
-    
-    tmpModel = GaussyModel(
-                x_elements = X,
-                y_elements = Y,
-                rules=fussy_rules, 
-                step=1,
-                step_range=[0,50],
-                debuglevel=5)
-    network = tmpModel.fit()
-    print(network)
-
+    model = PSmodel(population_size=1000,
+        cromosome_size=39,
+        target_values=target,
+        generations=10,
+        competidors_percentage=0.05,
+        mutation_percentage=0.01,
+        elitism=False,
+        resolutions=resolutions,
+        graph_generations=True,
+        x_bottom_limit=0,
+        x_top_limit=5,
+        x_step=1,
+        debuglevel=5
+    )
+    model.fit()
 
 if __name__ == "__main__":
     main()
