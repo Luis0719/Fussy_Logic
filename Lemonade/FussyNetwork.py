@@ -63,9 +63,8 @@ class GaussyModel():
         axs.plot_surface(X, Y, Z, rstride=1, cstride=1, linewidth=0, antialiased=False)
 
     def fit(self):
-        fussy_network_values = [[0 for x in range(self.total_Steps)] for y in range(self.total_Steps)]
+        fussy_network_values = np.zeros((self.total_Steps, self.total_Steps))
 
-        
         for i in range(self.step_range[0], self.step_range[1]):
             x = i*self.step
 

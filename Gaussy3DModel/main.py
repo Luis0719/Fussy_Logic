@@ -106,8 +106,8 @@ def main():
                 y_elements = Y,
                 rules=fussy_rules, 
                 step=1,
-                step_range=[0,3],
-                debuglevel=0)
+                step_range=[0,50],
+                debuglevel=5)
     network = tmpModel.fit()
     print(network)
 
