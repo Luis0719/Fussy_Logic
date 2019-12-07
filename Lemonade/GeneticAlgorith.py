@@ -151,7 +151,7 @@ class FussyParameters():
         self.fussy_rules = fussy_rules
     
 class PSmodel():
-    def __init__(self, population_size, cromosome_size, target_values, resolutions, generations, x_bottom_limit, x_top_limit, x_step, competidors_percentage=0.05, mutation_percentage=0, gen_bit_length=8, elitism=False, graph_generations=False, debuglevel=0):
+    def __init__(self, population_size, cromosome_size, target_values, resolutions, generations, bottom_limit, top_limit, step, competidors_percentage=0.05, mutation_percentage=0, gen_bit_length=8, elitism=False, graph_generations=False, debuglevel=0):
         # Validate population size to be an even number
         if population_size % 2 == 1:
             raise Exception("Population size must be an even number")
@@ -171,9 +171,9 @@ class PSmodel():
         self.gen_bit_length = gen_bit_length
         self.resolutions = resolutions
         self.elitism = elitism
-        self.x_bottom_limit = x_bottom_limit
-        self.x_top_limit = x_top_limit
-        self.x_step = x_step
+        self.x_bottom_limit = bottom_limit
+        self.x_top_limit = top_limit
+        self.x_step = step
         self.graph_generations = graph_generations
         self.debuglevel = debuglevel
 
@@ -208,7 +208,7 @@ class PSmodel():
         
     @staticmethod
     def is_valid_cromosome(cromosome):
-        return not 0 in cromosome[DESV_STD_START:DESV_STD_END]:
+        return not 0 in cromosome[DESV_STD_START:DESV_STD_END]
 
     @staticmethod
     def resolutionate(values, resolution):
@@ -517,16 +517,25 @@ class PSmodel():
 
         # Target
         ax = fig.add_subplot(1, 3, 1, projection='3d')
+        ax.set_title('Target')
+        ax.set_xlabel('Sugar')
+        ax.set_ylabel('Lemon')
         Z = np.array(self.target)
         surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, linewidth=0, antialiased=False)
 
         # Generation fittiest
         ax = fig.add_subplot(1, 3, 2, projection='3d')
+        ax.set_title('Current')
+        ax.set_xlabel('Sugar')
+        ax.set_ylabel('Lemon')
         Z = np.array(self.get_function_values(self.fittiest))
         surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, linewidth=0, antialiased=False)
 
         # History
         ax = fig.add_subplot(1, 3, 3)
+        ax.set_title('Error history')
+        ax.set_xlabel('Generation')
+        ax.set_ylabel('Error')
         ax.plot([i+1 for i in range(generation)], self.fittiests_history)
 
         # fig.tight_layout()
@@ -579,12 +588,14 @@ class PSmodel():
             
             if self.graph_generations:
                 self.plot_data(generation=i+1)
-
             
             self.log(self.fittiest, 5, f"Generation {i+1}")
+            self.log(self.fittiest[-1], 5, "Error")
 
         self.log(self.fittiests_history, 2)
         # self.plot_functions(generation_fittiest, i)
+
+        self.plot_data(generation=i+1)
 
         return self.fittiest
 

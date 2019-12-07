@@ -64,6 +64,7 @@ class GaussyModel():
 
     def fit(self):
         fussy_network_values = [[0 for x in range(self.total_Steps)] for y in range(self.total_Steps)]
+
         
         for i in range(self.step_range[0], self.step_range[1]):
             x = i*self.step
@@ -90,6 +91,9 @@ class GaussyModel():
                     self.log(f"P={element[PARAM_P]} Q={element[PARAM_Q]} R={element[PARAM_R]} XY={xy_gaussy_product} Result={fussy_value}", 0)
                     fussy_subtotal += fussy_value
 
+                if gaussy_subtotal == 0:
+                    gaussy_subtotal = 1E-20  # Prevent division by 0 exception
+                    
                 self.log(f"{fussy_subtotal} / {gaussy_subtotal} network[{j-self.step_range[0]}][{i-self.step_range[0]}]={fussy_subtotal / gaussy_subtotal}", 1)
                 fussy_network_values[j-self.step_range[0]][i-self.step_range[0]] = fussy_subtotal / gaussy_subtotal
                 self.log("****************", 1)  
